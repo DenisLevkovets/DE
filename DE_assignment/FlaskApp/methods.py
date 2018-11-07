@@ -39,8 +39,8 @@ def f(x, y):
     return cos(x) * (sin(x) - y)
 
 
-def exact(x):
-    return 2 * pow(eps, -sin(x)) + sin(x) - 1
+def exact(x, C):
+    return C * pow(eps, -sin(x)) + sin(x) - 1
 
 
 def xl(x0, X, h):
@@ -49,3 +49,6 @@ def xl(x0, X, h):
         x.append(round(x0, 8))
         x0 += h
     return x
+
+def getConstant(x0,y0):
+    return float(y0-sin(x0)+1)/pow(eps,-sin(x0))
