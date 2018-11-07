@@ -99,6 +99,7 @@
 </body>
 
 <script>
+    // Prepare lists of answers
     var exactSolution = [];
     var eulerMethod = [];
     var improvedEulerMethod = [];
@@ -110,6 +111,7 @@
     var totalErrorImprovedEulerMethod = [];
     var totalErrorRungeKuttaMethod = [];
 
+    // Default rendering on load
     window.onload = function () {
         exactSolution.length = 0;
         eulerMethod.length = 0;
@@ -118,13 +120,17 @@
         updateChart();
     };
 
-
+    //  Get text areas object from html
     var X = document.getElementById('inputX');
     var X0 = document.getElementById('inputX0');
     var Y0 = document.getElementById('inputY0');
     var step = document.getElementById('inputStep');
     var N = document.getElementById('inputN');
     var N0 = document.getElementById('inputN0');
+
+
+    // Build fields for graphics
+
 
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
@@ -144,7 +150,6 @@
             lineColor: "#51CDA0",
             gridThickness: 0,
             lineThickness: 1,
-            //includeZero: false,
         },
         axisY2: {
             title: "Y",
@@ -278,7 +283,6 @@
             lineColor: "#6D78AD",
             gridThickness: 0,
             lineThickness: 1,
-            //includeZero: false,
         },
         axisY2: {
             title: "Error",
@@ -327,6 +331,8 @@
     });
     global_error_chart.render();
 
+
+    // Update rendering and build graphs
     function updateChart() {
         exactSolution.length = 0;
         eulerMethod.length = 0;
