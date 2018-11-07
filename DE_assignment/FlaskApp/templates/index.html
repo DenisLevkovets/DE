@@ -19,60 +19,83 @@
 
         <!-- In <body> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.js"></script>
+
         <style>
-                .error {
-                        width: 30%;
-                        margin-top: 30px;
-                        border-right: solid 1px gray;
-                        height: 250px;
+                .main {
+                        display: table;
+                        width: 100%;
                 }
 
-                .error > div {
-                        float: left;
+                .col-md-12 {
+
+                        height: 25px;
+                        display: table-row;
                 }
 
         </style>
 
+
 </head>
 <body style="background-color: #FFFFFF">
-<div class="col-md-12" style="margin-top: 30px; width: 100%">
-        <div id="chartContainer"
-             style="width: 80%;  margin-top: 30px; margin-left: 20%; border: solid 1px gray; box-shadow: 0 0 10px #424242; ">
-        </div>
-        <div class="card text-center" style="border: solid 1px black; width: 19%;height: 400px">
-                <div class="card-header" style="background-color: #02a374; color: white;">
-                        Params
+<div class="main">
+        <div class="col-md-12" style="width: 100%;">
+                <div class="card text-center" style="border: solid 1px black; width: 100%;margin-top: 30px;">
+                        <div class="card-header" style="background-color: #02a374; color: white;">
+                                Params
+                        </div>
+                        <form action="#">
+                                <div class="form-group" style="float: left; margin-left: 20px">
+                                        <label for="inputX0">X0</label>
+                                        <textarea class="form-control" id="inputX0" rows="1">0</textarea>
+                                </div>
+                                <div class="form-group" style="float: left; margin-left: 20px">
+                                        <label for="inputX">X</label>
+                                        <textarea class="form-control" id="inputX" rows="1">5.2</textarea>
+                                </div>
+                                <div class="form-group" style="float: left; margin-left: 20px">
+                                        <label for="inputY0">Y0</label>
+                                        <textarea class="form-control" id="inputY0" rows="1">1</textarea>
+                                </div>
+                                <div class="form-group" style="float: left; margin-left: 20px">
+                                        <label for="inputStep">Step</label>
+                                        <textarea class="form-control" id="inputStep" rows="1">0.4</textarea>
+                                </div>
+                                <div class="form-group" style="float: left; margin-left: 20px">
+                                        <label for="inputN0">N0</label>
+                                        <textarea class="form-control" id="inputN0" rows="1">1</textarea>
+                                </div>
+                                <div class="form-group" style="float: left; margin-left: 20px">
+                                        <label for="inputN">N</label>
+                                        <textarea class="form-control" id="inputN" rows="1">10</textarea>
+                                </div>
+                                <button onclick="updateChart()"
+                                        style="margin-top: 30px; margin-left: 10px; width: 140px"
+                                        class="btn btn-outline-success">Build
+                                </button>
+                        </form>
                 </div>
-                <form>
-                        <div class="form-group">
-                                <label for="inputX0">X0</label>
-                                <textarea class="form-control" id="inputX0" rows="1">1</textarea>
-                        </div>
-                        <div class="form-group">
-                                <label for="inputX">X</label>
-                                <textarea class="form-control" id="inputX" rows="1">18.2</textarea>
-                        </div>
-                        <div class="form-group">
-                                <label for="inputStep">Step</label>
-                                <textarea class="form-control" id="inputStep" rows="1">0.1</textarea>
-                        </div>
-                </form>
-                <button onclick="updateChart()" style="margin-top: 30px" class="btn btn-outline-success">Process
-                </button>
         </div>
 
-</div>
-<div class="col-md-12" style="margin-top: 30px; ">
-        <div style="float: left; width: 100%; height: 250px; ">
-                <div style="float: left; height: 250px; width: 48%; border-right: solid 1px gray; box-shadow: 0 0 10px #424242;"
+        <div class="col-md-12" style="width: 100%">
+                <div id="chartContainer"
+                     style="border: solid 1px gray; box-shadow: 0 0 10px #424242; height: 225px; margin-top: 20px">
+                </div>
+        </div>
+
+        <div class="col-md-12" style=" width: 100%">
+                <div style="border-right: solid 1px gray; box-shadow: 0 0 10px #424242; height: 225px;margin-top: 20px"
                      id="errorChartContainer">
                 </div>
-                <div style="float: left; width: 48%; margin-left: 4%; height: 250px; border-right: solid 1px gray; box-shadow: 0 0 10px #424242;"
+        </div>
+
+        <div class="col-md-12" style=" width: 100%">
+                <div style="border-right: solid 1px gray; box-shadow: 0 0 10px #424242; height: 225px;margin-top: 20px"
                      id="globalErrorChartContainer">
                 </div>
         </div>
-
 </div>
+
+
 </body>
 
 <script>
@@ -83,6 +106,9 @@
     var errorEulerMethod = [];
     var errorImprovedEulerMethod = [];
     var errorRungeKuttaMethod = [];
+    var totalErrorEulerMethod = [];
+    var totalErrorImprovedEulerMethod = [];
+    var totalErrorRungeKuttaMethod = [];
 
     window.onload = function () {
         exactSolution.length = 0;
@@ -92,47 +118,13 @@
         updateChart();
     };
 
+
     var X = document.getElementById('inputX');
     var X0 = document.getElementById('inputX0');
+    var Y0 = document.getElementById('inputY0');
     var step = document.getElementById('inputStep');
-
-    // X.set("1");
-    // X0.set("18.2");
-    // step.set("0.1");
-
-
-    // noUiSlider.create(slider, {
-    //     start: [1, 18.2],
-    //     step: 0.1,
-    //     connect: true,
-    //     range: {
-    //         'min': -30,
-    //         'max': 30
-    //     },
-    // });
-    //
-    // noUiSlider.create(stepSlider, {
-    //     start: 0.2,
-    //     step: 0.01,
-    //     connect: true,
-    //     range: {
-    //         'min': 0.01,
-    //         'max': 1
-    //     },
-    // });
-
-    // var limitFieldMin = document.getElementById('slider-value-min');
-    // var limitFieldMax = document.getElementById('slider-value-max');
-    // var stepSliderVal = document.getElementById('stepSlider-val');
-
-    // slider.noUiSlider.on('update', function (values, handle) {
-    //     limitFieldMin.innerText = values[0];
-    //     limitFieldMax.innerText = values[1];
-    // });
-    //
-    // stepSlider.noUiSlider.on('update', function (values, handle) {
-    //     stepSliderVal.innerText = values[0];
-    // });
+    var N = document.getElementById('inputN');
+    var N0 = document.getElementById('inputN0');
 
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
@@ -143,7 +135,7 @@
         },
         axisX: {
             title: "X",
-            interval: 2
+            interval: parseFloat(step.value)
         },
         axisY: {
             title: "Y",
@@ -210,7 +202,7 @@
         },
         axisX: {
             title: "X",
-            interval: 2
+            interval: parseFloat(step.value)
         },
         axisY: {
             title: "Error",
@@ -276,8 +268,8 @@
             text: "Global Error graph"
         },
         axisX: {
-            title: "X",
-            interval: 2
+            title: "N",
+            interval: 1
         },
         axisY: {
             title: "Error",
@@ -315,21 +307,21 @@
                 axisYType: "secondary",
                 showInLegend: true,
                 name: "Euler Method",
-                dataPoints: errorEulerMethod
+                dataPoints: totalErrorEulerMethod
             },
             {
                 type: "line",
                 axisYType: "secondary",
                 showInLegend: true,
                 name: "Improved Euler Method",
-                dataPoints: errorImprovedEulerMethod
+                dataPoints: totalErrorImprovedEulerMethod
             },
             {
                 type: "line",
                 axisYType: "secondary",
                 showInLegend: true,
                 name: "Runge-Kutta Method",
-                dataPoints: errorRungeKuttaMethod
+                dataPoints: totalErrorRungeKuttaMethod
             }
         ]
     });
@@ -343,7 +335,10 @@
         errorEulerMethod.length = 0;
         errorImprovedEulerMethod.length = 0;
         errorRungeKuttaMethod.length = 0;
-        $.getJSON(`/getChart?from=${X0.value}&to=${X.value}&step=${step.value}&y0=3`, function (data) {
+        totalErrorEulerMethod.length = 0;
+        totalErrorImprovedEulerMethod.length = 0;
+        totalErrorRungeKuttaMethod.length = 0;
+        $.getJSON(`/getChart?from=${X0.value}&to=${X.value}&step=${step.value}&y0=${Y0.value}&n0=${N0.value}&n=${N.value}`, function (data) {
             $.each(data["Exact"], function (key, value) {
                 exactSolution.push({x: parseFloat(value[0]), y: parseFloat(value[1])});
             });
@@ -366,9 +361,19 @@
             $.each(data["error_Impr_Euler"], function (key, value) {
                 errorImprovedEulerMethod.push({x: parseFloat(value[0]), y: parseFloat(value[1])});
             });
+            $.each(data["total_error_Euler"], function (key, value) {
+                totalErrorEulerMethod.push({x: parseFloat(value[0]), y: parseFloat(value[1])});
+            });
+            $.each(data["total_error_Impr_Euler"], function (key, value) {
+                totalErrorImprovedEulerMethod.push({x: parseFloat(value[0]), y: parseFloat(value[1])});
+            });
+            $.each(data["total_error_Runge"], function (key, value) {
+                totalErrorRungeKuttaMethod.push({x: parseFloat(value[0]), y: parseFloat(value[1])});
+            });
 
             chart.render();
             error_chart.render();
+            global_error_chart.render();
         });
     }
 
